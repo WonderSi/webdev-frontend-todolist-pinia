@@ -16,10 +16,9 @@
 </template>
 
 <script setup>
-    import { ref, inject } from 'vue';
+    import { useTodoStore } from '../stores/useTodoStore';
 
-    const searchQuery = ref('');
-    const todoListRef = inject('todoListRef', null);
+    const todoStore = useTodoStore()
 
     function handleSearch() {
         if (todoListRef?.value) {
