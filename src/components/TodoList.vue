@@ -2,10 +2,10 @@
     <main class="todo-list">
         <ul 
             class="todo-list__tasks"
-            v-show="filteredTasks.length > 0"
+            v-show="todoStore.filteredTasks.length > 0"
         >
             <TodoItem
-                v-for="task in filteredTasks"
+                v-for="task in todoStore.filteredTasks"
                 :key="task.id"
                 :task="task"
                 @toggle="handleToggle"
@@ -15,7 +15,7 @@
         </ul>
         <div 
             class="todo-list__empty"
-            v-show="filteredTasks.length === 0"    
+            v-show="todoStore.filteredTasks.length === 0"    
         >
             <svg width="221" height="174" viewBox="0 0 221 174" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M111.934 168.852C153.422 167.978 186.917 160.771 186.748 152.756C186.578 144.741 152.808 138.952 111.319 139.827C69.8311 140.702 36.3357 147.908 36.5053 155.923C36.6749 163.939 70.4453 169.727 111.934 168.852Z" fill="#6C63FF"/>
@@ -147,113 +147,42 @@
 
 <script setup>
     import { ref, computed, onMounted } from 'vue';
+    import { useTodoStore } from '@/stores/useTodoStore';
     import TodoItem from '@cmp/TodoItem.vue';
     import AddButton from '@cmp/AddButton.vue';
     import AddTaskModal from '@cmp/AddTaskModal.vue';
 
-    const STORAGE_KEYS = {
-        TASKS: 'todoTasks'
-    };
 
-    const tasks = ref([]);
+    const todoStore = useTodoStore()
     const modalOpen = ref(false);
-    const searchQuery = ref('');
-    const currentFilter = ref('all');
-
-    const filteredTasks = computed(() => {
-        return tasks.value.filter(taskItem => {
-            const matchesSearch = searchQuery.value 
-                ? taskItem.text.toLowerCase().includes(searchQuery.value.toLowerCase())
-                : true;
-
-            let matchesFilter = false;
-            switch(currentFilter.value) {
-                case 'all':
-                    matchesFilter = true;
-                    break;
-                case 'complete':
-                    matchesFilter = taskItem.completed;
-                    break;
-                case 'incomplete':
-                    matchesFilter = !taskItem.completed;
-                    break;
-            }
-            
-            return matchesSearch && matchesFilter;
-        });
-    });
-
-    function loadTasksFromStorage() {
-        try {
-            if (typeof window === 'undefined') return [];
-            
-            const taskJson = localStorage.getItem(STORAGE_KEYS.TASKS);
-            return taskJson ? JSON.parse(taskJson) : [];
-        } catch (e) {
-            console.error("Error loading tasks:", e);
-            return [];
-        }
-    }
-
-    function saveTasksToStorage() {
-        try {
-            if (typeof window === 'undefined') return;
-            
-            localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks.value));
-        } catch (e) {
-            console.error("Error saving tasks:", e);
-        }
-    }
 
     function handleAddButtonClick() {
         modalOpen.value = true;
     }
 
     function addTask(text) {
-        const newTask = {
-            id: 'task-' + Date.now(),
-            text: text,
-            completed: false
-        };
-        tasks.value.push(newTask);
-        saveTasksToStorage();
+        todoStore.addTask(text)
     }
 
     function handleToggle(taskId) {
-        const taskItem = tasks.value.find(t => t.id === taskId);
-        if (taskItem) {
-            taskItem.completed = !taskItem.completed;
-            saveTasksToStorage();
-        }
+        todoStore.toggleTask(taskId)
     }
 
     function handleDelete(taskId) {
-        const index = tasks.value.findIndex(t => t.id === taskId);
-        if (index !== -1) {
-            tasks.value.splice(index, 1);
-            saveTasksToStorage();
-        }
+        todoStore.deleteTask(taskId)
     }
 
     function handleEdit(payload) {
-        const taskItem = tasks.value.find(t => t.id === payload.id);
-        if (taskItem) {
-            taskItem.text = payload.newText;
-            saveTasksToStorage();
-        }
+        todoStore.editTask(payload.id, payload.newText)
     }
 
     function setSearchQuery(query) {
-        searchQuery.value = query;
+        todoStore.setSearchQuery(query)
     }
 
     function setFilter(filter) {
-        currentFilter.value = filter;
+        todoStore.setFilter(filter)
     }
-
-    onMounted(() => {
-        tasks.value = loadTasksFromStorage();
-    });
 
     defineExpose({
         setSearchQuery,
