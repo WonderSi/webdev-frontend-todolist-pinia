@@ -1,0 +1,75 @@
+@use "sass:map";
+
+$colors: (
+    black: #252525,
+    black-light: #666666,
+    black-opacity: #25252580,
+    focus-purple: #534CC2,
+    gray: #CDCDCD,
+    purple: #6C63FF,
+    purple-light: #C3C1E5,
+    purple-opacity: #6C63FF33,
+    purple-shadow: #6C63FF66,
+    purple-focus: #534CC2,
+    red: #E50000,
+    white: #F7F7F7,
+    white-opacity: #FFFFFF80,
+    white-shadow: #FFFFFF66,
+);
+
+$themes: (
+    light: (
+        bg: map.get($colors, white),
+        text: map.get($colors, black),
+        text-crossed: map.get($colors, black-opacity),
+        input: map.get($colors, purple),
+        input-shadow: map.get($colors, purple-shadow),
+        input-text: map.get($colors, purple-light),
+    ),
+    dark: (
+        bg: map.get($colors, black),
+        text: map.get($colors, white),
+        text-crossed: map.get($colors, white-opacity),
+        input: map.get($colors, white),
+        input-shadow: map.get($colors, white-shadow),
+        input-text: map.get($colors, black-light),
+    )
+);
+
+/// Функция для генерации CSS custom properties из карты темы
+/// 
+/// @param {type} $theme-map - Карта с ключами и значениями переменных темы
+/// @return {type} - Новая карта для CSS переменных
+@function generate-theme-vars($theme-map) {
+    $vars: ();
+    @each $key, $value in $theme-map {
+        $vars: map.merge($vars, ( #{$key}: $value ));
+    }
+    @return $vars;
+}
+
+:root, [data-theme='light'] {
+    $light-vars: generate-theme-vars(map.get($themes, light));
+    @each $key, $value in $light-vars {
+        --#{$key}: #{$value};
+    }
+
+    --icon-gray: #{map.get($colors, gray)};
+    --icon-red: #{map.get($colors, red)};
+    --icon-purple: #{map.get($colors, purple)};
+
+    --button: #{map.get($colors, purple)};
+    --button-focus: #{map.get($colors, purple-focus)};
+    --button-focus-light: #{map.get($colors, purple-opacity)};
+    --button-text: #{map.get($colors, white)};
+    --reverse-button-border: #{map.get($colors, purple)};
+    --reverse-button: #{map.get($colors, white)};
+    --reverse-button-text: #{map.get($colors, purple)};
+}
+
+[data-theme='dark'] {
+    $dark-vars: generate-theme-vars(map.get($themes, dark));
+    @each $key, $value in $dark-vars {
+        --#{$key}: #{$value};
+    }
+}
