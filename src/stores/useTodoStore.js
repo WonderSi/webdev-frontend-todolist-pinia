@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { useUserState } from '@/stores/useUserStore'
+import { useUserStore } from '@/stores/useUserStore'
 
 export const useTodoStore = defineStore('todo', () => {
-    const userStore = useUserState()
+    const userStore = useUserStore()
 
     const allTasks = ref([])
     const searchQuery = ref('')
