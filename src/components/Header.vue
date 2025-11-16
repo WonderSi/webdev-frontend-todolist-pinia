@@ -6,6 +6,9 @@
             <div class="nav__controls">
                 <FiltersDropdown/>
                 <ThemeToggle/>
+                <button @click="$emit('logout')" class="logout-btn">
+                    <OutIcon/>
+                </button>
             </div>            
         </div>
     </header>
@@ -15,6 +18,7 @@
     import SearchBar from '@cmp/SearchBar.vue'
     import FiltersDropdown from '@cmp/FiltersDropdown.vue'
     import ThemeToggle from '@cmp/ThemeToggle.vue'
+    import OutIcon from '@cmp/OutIcon.vue';
 </script>
 
 <style scoped lang="scss">
@@ -46,6 +50,22 @@
         }
     }
 
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--button);
+        color: var(--button-text);
+        padding: 8px 9px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+     .logout-btn:hover {
+        background: var(--button-focus);
+    }
+
     @include tablet {
         .header {
             &__name {
@@ -75,6 +95,10 @@
         .nav {
             &__controls {
                 gap: 8px;
+                
+                button {
+                    padding: 6px;
+                }
             }
         }
     }
