@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from "vue-router"
-import { useUserState } from "@/stores/useUserStore"
+import { useUserStore } from "@/stores/useUserStore"
 
 const routes = [
     {
         path: '/login',
         name: 'Login',
-        component: () => import(''),
+        component: () => import('@/page/LoginPage.vue'),
         meta: { requiresGuest: true }
     },
     {
         path: '/register',
         name: 'Register',
-        component: () => import(''),
+        component: () => import('@/page/RegisterPage.vue'),
         meta: { requiresGuest: true }
     },
     {
         path: '/',
         name: 'Todo',
-        component: () => import(''),
+        component: () => import('@/page/TodoPage.vue'),
         meta: { requiresAuth: true }
     }
 ]
@@ -30,9 +30,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const userStore = useUserStore()
 
+    userStore.init()
+
     if (to.meta.requiresAuth && !userStore.isAuthenticated) {
         next('/login')
-    } else if (to.meta.requiresGuest && useUserState.isAuthenticated) {
+    } else if (to.meta.requiresGuest && userStore.isAuthenticated) {
         next('/')
     } else {
         next()
