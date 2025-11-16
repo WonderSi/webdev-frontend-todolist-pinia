@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-    import { useTodoStore } from '../stores/useTodoStore';
+    import { useTodoStore } from '@/stores/useTodoStore';
 
     const todoStore = useTodoStore()
 
