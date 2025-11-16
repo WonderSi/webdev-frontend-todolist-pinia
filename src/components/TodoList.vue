@@ -15,7 +15,7 @@
         </ul>
         <div 
             class="todo-list__empty"
-            v-show="filteredTasks.length === 0"    
+            v-show="useTodoStore.filteredTasks.length === 0"    
         >
             <svg width="221" height="174" viewBox="0 0 221 174" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M111.934 168.852C153.422 167.978 186.917 160.771 186.748 152.756C186.578 144.741 152.808 138.952 111.319 139.827C69.8311 140.702 36.3357 147.908 36.5053 155.923C36.6749 163.939 70.4453 169.727 111.934 168.852Z" fill="#6C63FF"/>
