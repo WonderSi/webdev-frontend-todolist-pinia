@@ -1,4 +1,4 @@
-import { difineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 export const useTodoStore = defineStore('todo', () => {
