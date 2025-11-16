@@ -1,11 +1,27 @@
 import { defineStore } from "pinia"
 import { ref, computed } from 'vue'
 
-export const useUserState = defineStore('user', () => {
+export const useUserStore = defineStore('user', () => {
     const currentUser = ref(null)
     const users = ref([])
+    const initialized = ref(false)
 
-    const isAuthenticated = computed(() => { currentUser.value !== null })
+    const isAuthenticated = computed(() => currentUser.value !== null)
+
+    function init() {
+        if (initialized.value) return
+
+        loadeUsers()
+
+        if (currentUser.value) {
+            const userExists = users.value.find(u => u.id == currentUser.value.id)
+            if(!userExists) {
+                currentUser.value = null
+            }
+        }
+
+        initialized.value = true
+    }
 
     function loadeUsers() {
         try {
@@ -69,6 +85,8 @@ export const useUserState = defineStore('user', () => {
         currentUser,
         users,
         isAuthenticated,
+        initialized,
+        init,
         register,
         login,
         logout,
