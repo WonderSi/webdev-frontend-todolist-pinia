@@ -1,10 +1,19 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
+import { useUserState } from '@/stores/useUserStore'
 
 export const useTodoStore = defineStore('todo', () => {
-    const tasks = ref([])
+    const userStore = useUserState()
+
+    const allTasks = ref([])
     const searchQuery = ref('')
     const currentFilter = ref('all')
+
+    const tasks = computed(() => {
+        if (!userStore.currentUser) return []
+        const userId = userStore.currentUser.id
+        return allTasks.value[userId] || []
+    })
 
     const filteredTasks = computed(() => {
         return tasks.value.filter(taskItem => {
@@ -33,12 +42,21 @@ export const useTodoStore = defineStore('todo', () => {
     const incompletedTasks = computed(() => { tasks.value.filter(t => !t.completed).length })
 
     function addTask(text) {
+        if(!userStore.currentUser) return 
+
+        const userId = userStore.currentUser.id
+
+        if (!allTasks.value[userId]) {
+            allTasks.value[userId] = []
+        }
+
         const newTask = {
             id: 'task-' + Date.now(),
             text: text,
-            completed: false
+            completed: false,
+            userId: userId
         }
-        tasks.value.push(newTask)
+        allTasks.value[userId].push(newTask)
     }
 
     function toggleTask(taskId) {
@@ -48,17 +66,21 @@ export const useTodoStore = defineStore('todo', () => {
         }
     }
 
-    function deleteTask(taskId, newText) {
-        const index = tasks.value.findIndex(t => t.id === taskId)
+    function deleteTask(taskId) {
+        if(!userStore.currentUser) return 
+
+        const userId = userStore.currentUser.id
+        const index = allTasks.value[userId].findIndex(t => t.id === taskId)
+
         if (index !== -1) {
-            tasks.value.splice(index, 1)
+            allTasks.value[userId].splice(index, 1)
         }
     }
 
     function editTask(taskId, newText) {
         const task = tasks.value.find(t => t.id === taskId)
         if (task) {
-        task.text = newText
+            task.text = newText
         }
     }
 
@@ -86,5 +108,8 @@ export const useTodoStore = defineStore('todo', () => {
         setFilter
     }
 }, {
-    persist: true
+    persist: {
+        key: 'todo-app-tasks',
+        pick: ['allTasks']
+    }
 })
