@@ -4,7 +4,7 @@
             type="text" 
             class="search-bar__input" 
             placeholder="Search note..."
-            v-model="searchQuery"
+            v-model="todoStore.searchQuery"
             @input="handleSearch"    
         >
         <button class="search-bar__submit">
