@@ -14,21 +14,21 @@
         <div class="filters-dropdown__menu" :class="{ active: isOpen }">
             <div 
                 class="dropdown-item" 
-                :class="{ active: currentFilter === 'all' }"
+                :class="{ active: todoStore.currentFilter === 'all' }"
                 @click="selectFilter('all')"
             >
                 All
             </div>
             <div 
                 class="dropdown-item" 
-                :class="{ active: currentFilter === 'complete' }"
+                :class="{ active: todoStore.currentFilter === 'complete' }"
                 @click="selectFilter('complete')"
             >
                 Complete
             </div>
             <div 
                 class="dropdown-item" 
-                :class="{ active: currentFilter === 'incomplete' }"
+                :class="{ active: todoStore.currentFilter === 'incomplete' }"
                 @click="selectFilter('incomplete')"
             >
                 Incomplete
@@ -39,15 +39,11 @@
 
 <script setup>
     import { ref, computed, onMounted, onUnmounted, inject } from 'vue';
+    import { useTodoStore } from '@/stores/useTodoStore';
 
-    const STORAGE_KEYS = {
-        FILTER: 'todoFilter'
-    }
-    
+    const todoStore = useTodoStore()
     const isOpen = ref(false);
-    const currentFilter = ref('all');
     const dropdownRef = ref(null);
-    const todoListRef = inject('todoListRef', null);
 
     const currentFilterText = computed(() => {
         const filterMap = {
@@ -55,7 +51,7 @@
             'complete': 'COMPLETE',
             'incomplete': 'INCOMPLETE'
         }
-        return filterMap[currentFilter.value] || 'ALL';
+        return filterMap[todoStore.currentFilter] || 'ALL';
     })
 
     function toggleDropdown(e) {
@@ -64,39 +60,8 @@
     }
 
     function selectFilter(filter) {
-        currentFilter.value = filter;
-        isOpen.value = false;
-        saveFilterToStorage(filter);
-
-        if(todoListRef?.value) {
-            todoListRef.value.setFilter(filter);
-        }
-    }
-
-    function loadFilterFromStorage() {
-        try {
-            if (typeof window === 'undefined') return;
-            
-            const savedFilter = localStorage.getItem(STORAGE_KEYS.FILTER);
-            if (savedFilter) {
-                currentFilter.value = savedFilter;
-                if (todoListRef?.value) {
-                    todoListRef.value.setFilter(savedFilter);
-                }
-            }
-        } catch (e) {
-            console.error('Error loading filter:', e)
-        }
-    }
-
-    function saveFilterToStorage(filter) {
-        try {
-            if (typeof window === 'undefined') return;
-            
-            localStorage.setItem(STORAGE_KEYS.FILTER, filter);
-        } catch (e) {
-            console.error('Error saving filter:', e)
-        }
+        todoStore.setFilter(filter)
+        isOpen.value = false
     }
 
     function handleClickOutside(e) {
@@ -106,8 +71,7 @@
     }
 
     onMounted(() => {
-        loadFilterFromStorage();
-        document.addEventListener('click', handleClickOutside);
+        document.addEventListener('click', handleClickOutside)
     });
 
     onUnmounted(() => {
