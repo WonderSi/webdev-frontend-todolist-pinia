@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores/useUserStore'
 export const useTodoStore = defineStore('todo', () => {
     const userStore = useUserStore()
 
-    const allTasks = ref([])
+    const allTasks = ref({})
     const searchQuery = ref('')
     const currentFilter = ref('all')
 
@@ -37,9 +37,9 @@ export const useTodoStore = defineStore('todo', () => {
         })
     })
 
-    const totalTasks = computed(() => { tasks.value.length })
-    const completedTasks = computed(() => { tasks.value.filter(t => t.completed).length })
-    const incompletedTasks = computed(() => { tasks.value.filter(t => !t.completed).length })
+    const totalTasks = computed(() => tasks.value.length)
+    const completedTasks = computed(() => tasks.value.filter(t => t.completed).length)
+    const incompletedTasks = computed(() => tasks.value.filter(t => !t.completed).length)
 
     function addTask(text) {
         if(!userStore.currentUser) return 
@@ -93,6 +93,7 @@ export const useTodoStore = defineStore('todo', () => {
     }
 
     return {
+        allTasks,
         tasks,
         searchQuery,
         currentFilter,
@@ -110,6 +111,6 @@ export const useTodoStore = defineStore('todo', () => {
 }, {
     persist: {
         key: 'todo-app-tasks',
-        pick: ['allTasks']
+        paths: ['allTasks'],
     }
 })
