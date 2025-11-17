@@ -11,8 +11,6 @@ export const useUserStore = defineStore('user', () => {
     function init() {
         if (initialized.value) return
 
-        loadeUsers()
-
         if (currentUser.value) {
             const userExists = users.value.find(u => u.id == currentUser.value.id)
             if(!userExists) {
@@ -21,25 +19,6 @@ export const useUserStore = defineStore('user', () => {
         }
 
         initialized.value = true
-    }
-
-    function loadeUsers() {
-        try {
-            const stored = localStorage.getItem('todo-users')
-            if (stored) {
-                users.value = JSON.parse(stored)
-            }
-        } catch (e) {
-            console.error('Error loading users:', e)
-        }
-    } 
-
-    function saveUsers() {
-        try {
-            localStorage.setItem('todo-users', JSON.stringify(users.value))
-        } catch (e) {
-            console.error('Error saving users:', e)
-        }
     }
 
     function register(email, password) {
@@ -56,7 +35,6 @@ export const useUserStore = defineStore('user', () => {
         }
 
         users.value.push(newUser)
-        saveUsers()
 
         currentUser.value = { id: newUser.id, email: newUser.email }
         return true
@@ -77,10 +55,6 @@ export const useUserStore = defineStore('user', () => {
         currentUser.value = null
     }
 
-    function checkAuth() {
-        loadeUsers()
-    }
-
     return {
         currentUser,
         users,
@@ -89,12 +63,11 @@ export const useUserStore = defineStore('user', () => {
         init,
         register,
         login,
-        logout,
-        checkAuth
+        logout
     }
 }, {
     persist: {
         key: 'todo-current-user',
-        pick: ['currentUser']
+        paths: ['currentUser', 'users']
     }
 })
