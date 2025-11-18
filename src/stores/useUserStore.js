@@ -41,10 +41,18 @@ export const useUserStore = defineStore('user', () => {
     }
 
     function login(email, password) {
-        const user = users.value.find(u => u.email === email && u.password === password)
+        const user = users.value.find(u => u.email === email)
 
         if (!user) {
-            throw new Error('Invalid email or password')
+            const error = new Error('User with this email does not exist')
+            error.code = 'USER_NOT_FOUND'
+            throw error
+        }
+
+        if (user.password !== password) {
+            const error = new Error('Invalid password')
+            error.code = 'INVALID_PASSWORD'
+            throw error
         }
 
         currentUser.value = { id: user.id, email: user.email }
