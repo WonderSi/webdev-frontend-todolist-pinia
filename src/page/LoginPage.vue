@@ -1,53 +1,66 @@
 <template>
     <div class="auth-page">
         <div class="auth-page__overlay"></div>
-        <div class="auth-page__card">
-            <h1>Login</h1>
-            <form @submit.prevent="handleLogin">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                      id="email"
-                      type="email"
-                      v-model="email"
-                      placeholder="your@email.com"
-                      autocomplete="email"
-                      required
-                    />
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="form-group__password-wrapper">
+        <div class="auth-page__content">
+            <div class="auth-page__card">
+                <h1>Login</h1>
+
+                <form @submit.prevent="handleLogin">
+                    <div class="form-group">
+                        <label>Email</label>
                         <input
-                            id="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            v-model="password"
-                            placeholder="••••••••"
-                            autocomplete="current-password"
-                            required
+                            id="email"
+                            v-model="email"
+                            placeholder="your@email.com"
+                            autocomplete="email"
+                            :disabled="isLoading"
+                            :class="{ 'input-error': errors.email }"
                         />
-                        <button 
-                            type="button" 
-                            class="show-password-btn"
-                            @click="showPassword = !showPassword"
-                            tabindex="-1"
-                        >
-                            <EyeOpenIcon v-if="showPassword" />
-                            <EyeClosedIcon v-else />
-                        </button>
                     </div>
-                </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <div class="form-group__password-wrapper">
+                            <input
+                                id="password"
+                                :type="showPassword ? 'text' : 'password'"
+                                v-model="password"
+                                placeholder="••••••••"
+                                autocomplete="current-password"
+                                :disabled="isLoading"
+                                :class="{ 'input-error': errors.password }"
+                            />
+                            <button 
+                                type="button" 
+                                class="show-password-btn"
+                                @click="showPassword = !showPassword"
+                                :disabled="isLoading"
+                                tabindex="-1"
+                            >
+                                <EyeOpenIcon v-if="showPassword" />
+                                <EyeClosedIcon v-else />
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" :disabled="isLoading">
+                        <span>{{ isLoading ? 'Logging in...' : 'Login' }}</span>
+                    </button>
+                </form>
                 
-                <span v-if="error" class="error-message">{{ error }}</span>
-                
-                <button type="submit" class="btn-primary">Login</button>
-            </form>
-            
-            <p class="auth-link">
-                Don't have an account? 
-                <router-link to="/register">Register here</router-link>
-            </p>
+                <p class="auth-link">
+                    Don't have an account? 
+                    <router-link to="/register">Register here</router-link>
+                </p>
+            </div>
+
+            <div class="error">
+                <Transition name="fade">
+                    <div v-if="error" class="error__message">
+                        {{ error }}
+                    </div>
+                </Transition>
+            </div>
         </div>
     </div>
 </template>
@@ -56,6 +69,8 @@
     import { ref } from 'vue'
     import { useRouter } from 'vue-router'
     import { useUserStore } from '@/stores/useUserStore'
+    import { validateLoginForm, handleLoginError } from '@/utils/validation/login'
+    import { useErrorHandler } from '@/utils/useErrorHandler'
     import EyeOpenIcon from '@cmp/EyeOpenIcon.vue'
     import EyeClosedIcon from '@cmp/EyeClosedIcon.vue'
 
@@ -65,21 +80,36 @@
     const email = ref('')
     const password = ref('')
     const showPassword = ref(false)
-    const error = ref('')
+    const isLoading = ref(false)
+
+    const { error, errors, setError, clearErrors } = useErrorHandler()
+
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
     async function handleLogin() {
-        error.value = ''
-        
-        if (!email.value || !password.value) {
-            error.value = 'Please fill in all fields'
+        clearErrors()
+
+        const validation = validateLoginForm(
+            email.value, 
+            password.value
+        )
+
+        if (!validation.isValid) {
+            setError(validation.error, validation.field)
             return
         }
+                
+        isLoading.value = true
         
         try {
-            userStore.login(email.value, password.value)
-            router.push('/')
+            await userStore.login(email.value, password.value)
+            await delay(800)
+            await router.push('/')
         } catch (e) {
-            error.value = e.message
+            const errorInfo = handleLoginError(e)
+            setError(errorInfo.message, errorInfo.field)
+        } finally {
+            isLoading.value = false
         }
     }
 </script>
@@ -99,6 +129,11 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: -1000;
+        }
+
+        &__content {
+            display: flex;
+            flex-direction: column;
         }
 
         &__card{
@@ -126,16 +161,6 @@
             font-weight: 500;
         }
 
-        input {
-        &:-webkit-autofill {
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: var(--text) !important;
-            caret-color: var(--text);
-        }
-
-
-        }
-
         &__password-wrapper {
             position: relative;
             
@@ -161,16 +186,28 @@
         }
     }
 
-    .error-message {
-        display: block;
-        margin-bottom: 15px;
-        padding: 10px;
-        background: rgba(255, 68, 68, 0.1);
-        border: 1px solid #ff4444;
-        border-radius: 6px;
-        color: #ff4444;
-        text-align: center;
-        font-size: 14px;
+    .input-error {
+        border-color: #ff4444 !important;
+        background-color: rgba(255, 68, 68, 0.05) !important;
+    }   
+
+    .error {
+        display: flex;
+        justify-content: center;
+        min-height: 43px;
+        margin-top: 15px;
+        margin-inline: 30px;
+
+        &__message {
+            width: fit-content;
+            padding: 10px;
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            border-radius: 6px;
+            color: #ff4444;
+            text-align: center;
+            font-size: 14px;
+        }
     }
 
     .btn-primary {
@@ -187,6 +224,11 @@
         
         &:hover {
             background: var(--button-focus);
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     }
 
@@ -209,5 +251,15 @@
 
     .eye-icon {
         color: var(--text)
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.3s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+        opacity: 0;
     }
 </style>
