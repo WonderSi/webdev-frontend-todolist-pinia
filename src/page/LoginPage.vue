@@ -187,8 +187,8 @@
     }
 
     .input-error {
-        border-color: #ff4444 !important;
-        background-color: rgba(255, 68, 68, 0.05) !important;
+        border-color: var(--error-red) !important;
+        background-color: var(--error-bg) !important;
     }   
 
     .error {
@@ -201,10 +201,10 @@
         &__message {
             width: fit-content;
             padding: 10px;
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid #ff4444;
+            background: var(--error-bg);
+            border: 1px solid var(--error-red);
             border-radius: 6px;
-            color: #ff4444;
+            color: var(--error-red);
             text-align: center;
             font-size: 14px;
         }
