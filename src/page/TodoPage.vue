@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-    import { onMounted } from 'vue'
     import { useRouter } from 'vue-router'
     import { useUserStore } from '@/stores/useUserStore'
     import Header from '@cmp/Header.vue'
@@ -14,10 +13,6 @@
 
     const router = useRouter()
     const userStore = useUserStore()
-
-    onMounted(() => {
-        userStore.checkAuth()
-    })
 
     function handleLogout() {
         userStore.logout()

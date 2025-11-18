@@ -1,32 +1,20 @@
 <template>
-    <div class="app">
-        <div class="app__container">
-            <Header/>
-            <TodoList ref="todoListRef"/> 
-        </div>
-    </div>
+    <router-view/>
 </template>
 
 <script setup>
-    import { ref } from 'vue';
-    import Header from '@cmp/Header.vue';
-    import TodoList from '@cmp/TodoList.vue';
+    import { onMounted } from 'vue'
+    import { useUserStore } from '@/stores/useUserStore'
+    import { useThemeStore } from '@/stores/useThemeStore'
 
-    const todoListRef = ref(null);
+    const userStore = useUserStore()
+    const themeStore = useThemeStore()
+
+    onMounted(() => {
+        userStore.init()
+        themeStore.init()
+    })
 </script>
 
 <style scoped lang="scss">
-    .app {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        height: 100vh;
-
-        &__container {
-            width: fit-content;
-            height: 100%;
-            position: relative;
-            box-sizing: border-box;
-        }
-    }
 </style>
