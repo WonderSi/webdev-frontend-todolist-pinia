@@ -18,6 +18,7 @@ export const ERROR_MESSAGES = {
     PASSWORDS_DO_NOT_MATCH: 'Passwords do not match',
 
     //general
+    FILL_ALL_FIELDS: 'Please fill in all fields',
     LOGIN_FAILED: 'An error occurred during login',
     REGISTRATION_FAILED: 'An error occurred during registration'
 }
