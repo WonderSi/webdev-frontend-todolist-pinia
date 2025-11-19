@@ -39,6 +39,24 @@ vite.config.js
 Репозиторий на проект прошлой лабораторной работы: <br/>
 https://github.com/WonderSi/webdev-frontend-todolist-vue
 
+Валидация полей: <br/>
+
+<div align="center">
+  <b>Login</b> <br/>
+  <p>email</p>
+  <img src="https://github.com/user-attachments/assets/224b77b6-ac7b-4740-afc0-9db9ceb54dee" alt="login-1" /> <br/>
+  <p>password</p>
+  <img src="https://github.com/user-attachments/assets/ff2a7e3d-d7ea-4ea7-8303-020f114c5168" alt="login-2" />
+</div> <br/>
+
+<div align="center">
+  <b>Register</b> <br/>
+  <p>email</p>
+  <img src="https://github.com/user-attachments/assets/7dbac2c6-24ec-4889-9f4f-7e760af65a49" alt="register-1" />
+  <p>password</p>
+  <img src="https://github.com/user-attachments/assets/6cdbbe18-d5a8-450f-a99e-0fafc49dd191" alt="register-2" />
+</div>
+
 ## Установка / Запуск
 ### Деплой
 https://webdev-frontend-todolist-pinia.vercel.app
