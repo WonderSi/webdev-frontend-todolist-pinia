@@ -19,6 +19,12 @@ const routes = [
         name: 'Todo',
         component: () => import('@/page/TodoPage.vue'),
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/about',
+        name: 'About',
+        component: () => import('@/page/AboutPage.vue'),
+        meta: { requiresGuest: true }
     }
 ]
 

@@ -61,6 +61,10 @@
                     </div>
                 </Transition>
             </div>
+
+            <p class="about-link">  
+                <router-link to="/about">About</router-link>
+            </p>
         </div>
     </div>
 </template>
