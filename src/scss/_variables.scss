@@ -15,6 +15,9 @@ $colors: (
     white: #F7F7F7,
     white-opacity: #FFFFFF80,
     white-shadow: #FFFFFF66,
+
+    error-red: #df4040,
+    error-red-dark: #8f36368a,
 );
 
 $themes: (
@@ -65,6 +68,9 @@ $themes: (
     --reverse-button-border: #{map.get($colors, purple)};
     --reverse-button: #{map.get($colors, white)};
     --reverse-button-text: #{map.get($colors, purple)};
+
+    --error-red: #{map.get($colors, error-red)};
+    --error-bg:  #{map.get($colors, error-red-dark)};
 }
 
 [data-theme='dark'] {
