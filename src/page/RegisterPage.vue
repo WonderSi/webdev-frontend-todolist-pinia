@@ -83,6 +83,10 @@
                     </div>
                 </Transition>
             </div>
+
+            <p class="about-link">  
+                <router-link to="/about">About</router-link>
+            </p>
         </div>
     </div>
 </template>
@@ -217,28 +221,28 @@
         background-color: var(--error-bg) !important;
     }
 
-.error {
-    position: relative;
-    min-height: 43px;
-    margin-top: 15px;
-    margin-inline: 15px;
-    display: flex;
-    justify-content: center;
+    .error {
+        position: relative;
+        min-height: 43px;
+        margin-top: 15px;
+        margin-inline: 15px;
+        display: flex;
+        justify-content: center;
 
-    &__message {
-        position: absolute;
-        padding: 10px 20px;
-        background: var(--error-bg);
-        border: 1px solid var(--error-red);
-        border-radius: 6px;
-        color: var(--error-red);
-        text-align: center;
-        font-size: 14px;
-        width: fit-content;
-        max-width: 100%;
-        word-wrap: break-word;
+        &__message {
+            position: absolute;
+            padding: 10px 20px;
+            background: var(--error-bg);
+            border: 1px solid var(--error-red);
+            border-radius: 6px;
+            color: var(--error-red);
+            text-align: center;
+            font-size: 14px;
+            width: fit-content;
+            max-width: 100%;
+            word-wrap: break-word;
+        }
     }
-}
 
     .btn-primary {
         width: 100%;
@@ -273,6 +277,22 @@
             text-decoration: none;
             font-weight: 500;
             
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .about-link {
+        position: absolute;
+        bottom: 1em;
+        left: 1em;
+
+        a {
+            color: var(--button);
+            text-decoration: none;
+            font-weight: 500;
+
             &:hover {
                 text-decoration: underline;
             }
