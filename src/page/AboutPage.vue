@@ -1,53 +1,14 @@
 <template>
     <div class="about-page"> 
         <div class="content">
-            <pre>
-                                                                                                                                                                    
-                                                                                                                                                    
-               AAA                                                                                             UUUUUUUU     UUUUUUUU                
-              A:::A                                                                                            U::::::U     U::::::U                
-             A:::::A                                                                                           U::::::U     U::::::U                
-            A:::::::A                                                                                          UU:::::U     U:::::UU                
-           A:::::::::A              mmmmmmm    mmmmmmm      ooooooooooo   nnnn  nnnnnnnn       ggggggggg   gggggU:::::U     U:::::U    ssssssssss   
-          A:::::A:::::A           mm:::::::m  m:::::::mm  oo:::::::::::oo n:::nn::::::::nn    g:::::::::ggg::::gU:::::D     D:::::U  ss::::::::::s  
-         A:::::A A:::::A         m::::::::::mm::::::::::mo:::::::::::::::on::::::::::::::nn  g:::::::::::::::::gU:::::D     D:::::Uss:::::::::::::s 
-        A:::::A   A:::::A        m::::::::::::::::::::::mo:::::ooooo:::::onn:::::::::::::::ng::::::ggggg::::::ggU:::::D     D:::::Us::::::ssss:::::s
-       A:::::A     A:::::A       m:::::mmm::::::mmm:::::mo::::o     o::::o  n:::::nnnn:::::ng:::::g     g:::::g U:::::D     D:::::U s:::::s  ssssss 
-      A:::::AAAAAAAAA:::::A      m::::m   m::::m   m::::mo::::o     o::::o  n::::n    n::::ng:::::g     g:::::g U:::::D     D:::::U   s::::::s      
-     A:::::::::::::::::::::A     m::::m   m::::m   m::::mo::::o     o::::o  n::::n    n::::ng:::::g     g:::::g U:::::D     D:::::U      s::::::s   
-    A:::::AAAAAAAAAAAAA:::::A    m::::m   m::::m   m::::mo::::o     o::::o  n::::n    n::::ng::::::g    g:::::g U::::::U   U::::::Ussssss   s:::::s 
-   A:::::A             A:::::A   m::::m   m::::m   m::::mo:::::ooooo:::::o  n::::n    n::::ng:::::::ggggg:::::g U:::::::UUU:::::::Us:::::ssss::::::s
-  A:::::A               A:::::A  m::::m   m::::m   m::::mo:::::::::::::::o  n::::n    n::::n g::::::::::::::::g  UU:::::::::::::UU s::::::::::::::s 
- A:::::A                 A:::::A m::::m   m::::m   m::::m oo:::::::::::oo   n::::n    n::::n  gg::::::::::::::g    UU:::::::::UU    s:::::::::::ss  
-AAAAAAA                   AAAAAAAmmmmmm   mmmmmm   mmmmmm   ooooooooooo     nnnnnn    nnnnnn    gggggggg::::::g      UUUUUUUUU       sssssssssss    
-                                                                                                        g:::::g                                     
-                                                                                            gggggg      g:::::g                                     
-                                                                                            g:::::gg   gg:::::g                                     
-                                                                                             g::::::ggg:::::::g                                     
-                                                                                              gg:::::::::::::g                                      
-                                                                                                ggg::::::ggg                                        
-                                                                                                   gggggg                                           
-            </pre>
-            <pre>
-::::::::::::::::::::::::::::::
-:::::::::-=*%%%%%#*--:::::::::
-:::::::+%@@@%%%%%%@@@*::::::::
-:::::+@@@#*********#%@@-::::::
-:::-#@@@@@@@@@@@#***#@@#::::::
-::+@@#-....:--*@@%***%@%-:::::
-:=%@=::::::---+#@@#**#@@%#*=-:
-:=@@##**++++*###@@#**#@@%#@@@-
-::+@@@%%####%%@@@#***#@@%##%@+
-:::@@@@@@@@@@@%#*****#@@@%%%@#
-::-@@#**************#%@@@%%%@@
-::-@@%**************#%@@@%%%@@
-::-@@%#************#%%@@@%%%@%
-:::#@@%##********##%%%@@@%%@@#
-:::+@@%%%%%%%%%%%%%%%%@@@%%@@=
-            </pre>
+            <div class="quote-section" @click="quotesStore.nextQuote()">
+                <p class="quote">"{{ currentQuote }}"</p>
+                <p class="author">(C) Jason Statham</p>
+                <p class="click">Click on me</p>
+            </div>
+            <img :src="getImageUrl(currentImage)" alt="Jason Statham">
         </div>
         <div class="controls">
-            <button></button>
             <button @click="goBack" class="logout-btn">
                 <OutIcon/>
             </button>
@@ -56,13 +17,21 @@ AAAAAAA                   AAAAAAAmmmmmm   mmmmmm   mmmmmm   ooooooooooo     nnnn
 </template>
 
 <script setup>
+    import { useRouter } from 'vue-router'
     import OutIcon from '@cmp/OutIcon.vue'
-import { useRouter } from 'vue-router';
+    import { useQuotesStore } from '@/stores/useQuotesStore'
+    import { storeToRefs } from 'pinia'
 
     const router = useRouter()
+    const quotesStore = useQuotesStore()
+    const { currentQuote, currentImage } = storeToRefs(quotesStore) 
 
     const goBack = () => {
         router.back()
+    }
+
+    const getImageUrl = (imageName) => {
+        return new URL(`/src/assets/img/${imageName}`, import.meta.url).href
     }
 </script>
 
@@ -76,18 +45,58 @@ import { useRouter } from 'vue-router';
 
         .content {
             width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            justify-content: center;
             text-align: center;
-            gap: clamp(10px, 2vw, 20px);
-            padding: clamp(10px, 3vw, 20px);
             color: var(--text);
 
-            pre {   
-                will-change: transform;
-                font-size: clamp(0.3rem, 1.2vmin, 1rem);
-                line-height: 1.2;
+            .quote-section {
+                flex: 0 0 500px;
+                max-width: 500px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 20px;
+                cursor: pointer;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                gap: 20px;
+
+                &:hover {
+                    .click {
+                        opacity: 0;
+                    }
+                }
+                
+                .quote {
+                    font-family: 'Kanit', 'Roboto', sans-serif;
+                    font-weight: 400;
+                    font-size: 24px;
+                    line-height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    text-align: center;
+                    word-wrap: break-word;
+
+                }
+                .author {
+                    opacity: 0.8;
+                }
+
+                .click {
+                    opacity: 0.2;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+            }
+
+            img {
+                max-width: 50%;
+                max-height: 50%;
+                width: auto;
+                height: auto;
+                object-fit: contain;
             }
         }
 
@@ -96,6 +105,8 @@ import { useRouter } from 'vue-router';
             display: flex;
             gap: 15px;
             padding: 15px;
+            top: 0;
+            right: 0;
             
             button {
                 display: flex;
@@ -122,32 +133,15 @@ import { useRouter } from 'vue-router';
         }
     }
 
-    @include desktop {
-        .controls {
-            top: 0;
-            right: 0;
-        }
-    }
-
     @include tablet {
-        .about-page .content pre {
-            font-size: clamp(0.25rem, 1vmin, 0.7rem);
-        }
-
-        .controls {
-            top: 0;
-            right: 0;
+        .content {
+            flex-direction: column-reverse;
         }
     }
 
-    @include mobile {
-        .about-page .content pre {
-            font-size: clamp(0.2rem, 0.9vmin, 0.5rem);
-        }
-
-        .controls {
-            bottom: 0;
-            right: 0;
+    @include mobile  {
+        .content {
+            flex-direction: column-reverse;
         }
     }
 </style>
