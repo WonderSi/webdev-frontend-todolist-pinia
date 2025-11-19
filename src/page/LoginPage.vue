@@ -253,6 +253,22 @@
         }
     }
 
+    .about-link {
+        position: absolute;
+        bottom: 1em;
+        left: 1em;
+
+        a {
+            color: var(--button);
+            text-decoration: none;
+            font-weight: 500;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
     .eye-icon {
         color: var(--text)
     }
