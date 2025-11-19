@@ -1,4 +1,4 @@
-# 🎓 TodoList Vue
+# 🎓 TodoList Vue Pinia
 
 ![HTML5](https://img.shields.io/badge/HTML5-Structure-orange?style=for-the-badge&logo=html5)
 ![CSS3](https://img.shields.io/badge/CSS3-Styling-blue?style=for-the-badge&logo=css3)
@@ -9,15 +9,21 @@
 
 ## 🛠️ Технологии
 
-- **Frontend**: HTML5, CSS3, JavaScript, Vue3, SCSS
+- **Frontend**: HTML5, CSS3, JavaScript, Vue3, SCSS, Pinia
 - **Архитектура**:
 ```
 src/
 ├─ assets/
 │ ├─ fonts/
+│ ├─ img/
 │ └─ svg/
 ├─ components/
+├─ page/
+├─ router/
 ├─ scss/
+├─ stores/
+├─ utils/
+│ └─ validation/
 ├─ App.vue
 └─ main.js
 .gitignore
@@ -29,19 +35,19 @@ vite.config.js
 
 ## Чек лист
 
-Проект переделан с HTML, CSS, JavaScript на Vue3 <br/>
-Репозиторий на проект с использованием HTML, CSS, JavaScript: <br/>
-https://github.com/WonderSi/webdev-frontend-todolist
+Расширение To-Do Vue-приложения с использованием современного стека: Pinia, Pinia Persist, vue-router, компонентный подход и архитектурная организация проекта <br/>
+Репозиторий на проект прошлой лабораторной работы: <br/>
+https://github.com/WonderSi/webdev-frontend-todolist-vue
 
 ## Установка / Запуск
 ### Деплой
-https://webdev-frontend-todolist-vue.vercel.app
+https://webdev-frontend-todolist-pinia.vercel.app
 
 ### Для личного пользования
 1. Клонируйте репозиторий:
 ```
-git clone https://github.com/WonderSi/webdev-frontend-todolist-vue.git
-cd webdev-frontend-todolist-vue
+git clone https://github.com/WonderSi/webdev-frontend-todolist-pinia.git
+cd webdev-frontend-todolist-pinia
 ```
 2. Установите зависимости:
 ```
@@ -55,7 +61,7 @@ yarn dev
 
 ---
 Выполнил Козлов Кирилл ФИТ-231 <br/>
-https://github.com/WonderSi/webdev-frontend-todolist-vue
+https://github.com/WonderSi/webdev-frontend-todolist-pinia
 
 
 
